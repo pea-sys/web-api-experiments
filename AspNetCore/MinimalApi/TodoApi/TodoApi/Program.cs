@@ -1,10 +1,16 @@
 //https://docs.microsoft.com/ja-jp/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
 var app = builder.Build();
+
+//HTTP 要求を HTTPS にリダイレクトするためのミドルウェア
+app.UseHttpsRedirection();
+//HTTP Strict Transport Security プロトコル (HSTS) ヘッダーをクライアントに送信するための、HSTS ミドルウェア
+app.UseHsts();
 
 app.MapGet("/todoitems", async (TodoDb db) =>
     await db.Todos.Select(x => new TodoItemDTO(x)).ToListAsync());

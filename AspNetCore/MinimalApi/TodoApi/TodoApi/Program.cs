@@ -5,12 +5,29 @@ using System.Net;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
+
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddHttpsRedirection(options =>
+    {
+        //永続的なリダイレクトを構成する
+        options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
+        //一時的なリダイレクトを構成する
+        //options.RedirectStatusCode = (int)HttpStatusCode.TemporaryRedirect;
+        options.HttpsPort = 7113;
+    });
+}
 var app = builder.Build();
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    //HTTP Strict Transport Security プロトコル (HSTS) ヘッダーをクライアントに送信するための、HSTS ミドルウェア
+    app.UseHsts();
+}
 //HTTP 要求を HTTPS にリダイレクトするためのミドルウェア
 app.UseHttpsRedirection();
-//HTTP Strict Transport Security プロトコル (HSTS) ヘッダーをクライアントに送信するための、HSTS ミドルウェア
-app.UseHsts();
+
 
 app.MapGet("/todoitems", async (TodoDb db) =>
     await db.Todos.Select(x => new TodoItemDTO(x)).ToListAsync());

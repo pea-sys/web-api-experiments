@@ -1,4 +1,5 @@
 //https://docs.microsoft.com/ja-jp/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -6,27 +7,30 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
 
-if (!builder.Environment.IsDevelopment())
-{
-    builder.Services.AddHttpsRedirection(options =>
-    {
-        //永続的なリダイレクトを構成する
-        options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
-        //一時的なリダイレクトを構成する
-        //options.RedirectStatusCode = (int)HttpStatusCode.TemporaryRedirect;
-        options.HttpsPort = 7113;
-    });
-}
+//既定でlocalhostはHsts対象外
+//ブラウザ限定
+//builder.Services.AddHsts(options =>
+//{
+//    options.Preload = true;
+//    options.IncludeSubDomains = true;
+//    options.MaxAge = TimeSpan.FromMinutes(5);
+//});
+
+//builder.Services.AddHttpsRedirection(options =>
+//{
+//    //永続的なリダイレクトを構成する
+//    //options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
+//    //一時的なリダイレクトを構成する
+//    options.RedirectStatusCode = (int)HttpStatusCode.TemporaryRedirect;
+//    options.HttpsPort = 7113;
+//});
+
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    //HTTP Strict Transport Security プロトコル (HSTS) ヘッダーをクライアントに送信するための、HSTS ミドルウェア
-    app.UseHsts();
-}
 //HTTP 要求を HTTPS にリダイレクトするためのミドルウェア
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+//HTTP Strict Transport Security プロトコル (HSTS) ヘッダーをクライアントに送信するための、HSTS ミドルウェア
+//app.UseHsts();
 
 
 app.MapGet("/todoitems", async (TodoDb db) =>

@@ -7,6 +7,7 @@
 - ASP.NET Core 6.0
 
 ■ 手順
+
 Program.cs で HTTP ロギングミドルウェアの使用を宣言する。
 
 ```
@@ -96,3 +97,48 @@ info: Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware[2]
 ```
 
 ログの量が増えると、当然パフォーマンスも落ちるので注意が必要です。
+
+## W3C ロギング
+
+[参考](https://docs.microsoft.com/ja-jp/aspnet/core/fundamentals/w3c-logger/?view=aspnetcore-6.0)
+
+HTTP ロガーと似たミドルウェアで W3C ロガーがあります。  
+こちらはファイルに書き込みできるのと、json ファイルの設定も不要なので個人的にはこちらの方が好きです。
+
+■ 環境
+
+- ASP.NET Core 6.0
+
+■ 手順  
+Program.cs で W3C ロギングミドルウェアの使用を宣言する。
+
+```
+var app = builder.Build();
+
+app.UseW3CLogging(); //W3Cロギングミドルの使用宣言
+```
+
+ログの構成はカスタムできます。
+
+```
+builder.Services.AddW3CLogging(logging =>
+{
+    //// Log all W3C fields
+    logging.LoggingFields = W3CLoggingFields.All;
+
+    logging.FileSizeLimit = 5 * 1024 * 1024;
+    logging.RetainedFileCountLimit = 2;
+    //logging.FileName = "MyLogFile";//ファイル名を指定しないとw3clog-yyyyMMdd.xxxx.txtになる(xxxxは起動する度に採番されるっぽい)
+    //logging.LogDirectory = @"C:\logs";//フォルダを指定しないとexeファイルの１つ上にlogsフォルダが作られる
+    logging.FlushInterval = TimeSpan.FromSeconds(2);
+});
+```
+
+次のログが出力されます。
+
+```
+#Version: 1.0
+#Start-Date: 2022-06-22 12:45:57
+#Fields: date time c-ip cs-username s-computername s-ip s-port cs-method cs-uri-stem cs-uri-query sc-status time-taken cs-version cs-host cs(User-Agent) cs(Cookie) cs(Referer)
+2022-06-22 12:45:55 ::1 - DESKTOP-L18OTEK ::1 5251 GET /weatherforecast - 200 127.9499 HTTP/1.1 localhost:5251 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.0.0+Safari/537.36 - -
+```

@@ -1,0 +1,29 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<table border="1" style="border-collapse: collapse">
+  <tr>
+    <th>キャッシュ方法</th>
+    <th>値</th>
+  </tr>
+  <tr>
+    <td>なし</td>
+    <td>@Model.CurrentDateTime</td>
+  </tr>
+  <tr>
+    <td>最終アクセスから10秒有効</td>
+    <td>@Model.SlidingCacheCurrentDateTime</td>
+  </tr>
+    <tr>
+    <td>初回アクセスから10秒有効</td>
+    <td>@Model.AbsoluteCurrentDateTime</td>
+  </tr>
+    </tr>
+    <tr>
+    <td>起動中有効</td>
+    <td>@Model.NeverRemoveCurrentDateTime</td>
+  </tr>
+</table>

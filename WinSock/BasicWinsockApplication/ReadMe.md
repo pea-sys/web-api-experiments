@@ -1,1 +1,2 @@
-https://docs.microsoft.com/en-us/windows/win32/winsock/windows-sockets-start-page-2
+- [winsock](https://docs.microsoft.com/en-us/windows/win32/winsock/windows-sockets-start-page-2)
+- [Byteorder](https://docs.microsoft.com/en-us/windows/win32/winsock/byte-ordering-2)

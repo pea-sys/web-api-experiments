@@ -33,7 +33,7 @@ sudo /etc/init.d/inetutils-inetd start
 netsh interface portproxy add v4tov4 listenport=23 connectaddress=localhost
 ```
 
-- 実験後に telnet server を修了します
+- Client実験後に telnet server を終了します
 
 ```
 sudo /etc/init.d/inetutils-inetd stop
@@ -79,7 +79,7 @@ To see these additional updates run: apt list --upgradable
 Last login: Wed Aug 10 19:13:22 JST 2022 from localhost on pts/1
 ```
 
-4. 試しに ping 実行
+- 4. 試しに ping 実行
 
 ```
 ping -c 5 www.google.com

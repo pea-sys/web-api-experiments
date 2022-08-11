@@ -33,7 +33,7 @@ sudo /etc/init.d/inetutils-inetd start
 netsh interface portproxy add v4tov4 listenport=23 connectaddress=localhost
 ```
 
-- Client実験後に telnet server を終了します
+- Client 実験後に telnet server を終了します
 
 ```
 sudo /etc/init.d/inetutils-inetd stop
@@ -94,4 +94,14 @@ PING www.google.com (142.250.207.4) 56(84) bytes of data.
 --- www.google.com ping statistics ---
 5 packets transmitted, 5 received, 0% packet loss, time 4007ms
 rtt min/avg/max/mdev = 78.707/91.752/108.436/12.431 ms
+```
+
+- 5. web リクエスト実行
+     ※port 80 を開けてないので失敗？
+
+```
+GET /index.html HTTP/2.0
+<html><body><h1>403 Forbidden</h1>
+Request forbidden by administrative rules.
+</body></html>
 ```

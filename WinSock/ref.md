@@ -1,0 +1,1 @@
+[Winsock Programmer's FAQ](http://www.kt.rim.or.jp/~ksk/wskfaq-ja/)

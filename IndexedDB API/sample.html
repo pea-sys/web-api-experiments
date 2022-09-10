@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>IndexedDB Experiments</title>
+  </head>
+  <body>
+    <button type="button" onclick="openAndCreateDb()">OPEN</button>
+    <button type="button" onclick="closeDb()">CLOSE</button>
+    <button type="button" onclick="insertRow()">INSERT</button>
+    <button type="button" onclick="updateRow()">UPDATE</button>
+    <button type="button" onclick="selectRow()">SELECT</button>
+    <button type="button" onclick="deleteDb()">DELETE</button>
+  </body>
+  <script>
+    const DB_NAME = "sample";
+    const STORE_NAME = "store";
+    var ver = 2;
+    var db;
+
+    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+    window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+    window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+
+    function loadFinished() {
+      if (!window.indexedDB) {
+        console.log("このブラウザーは安定版のIndexedDBに対応していません。");
+      } else {
+        console.log("このブラウザーは安定版のIndexedDBに対応しています。");
+      }
+    }
+    function openAndCreateDb() {
+      var request = indexedDB.open(DB_NAME, ver);
+      // 初回起動時やバージョン更新時のみ呼ばれる
+      // バージョンに合わせたセットアップ処理を実装する
+      request.onupgradeneeded = function (event) {
+        db = request.result;
+        // ストアキーはシーケンサーにする
+        // シーケンサーはストアを削除しない限り、リセット出来ない
+        db.createObjectStore(STORE_NAME, { keyPath: "key", autoIncrement: true });
+        console.log("openDb_upgradeneeded=Success");
+      };
+      request.onsuccess = function (event) {
+        db = event.target.result;
+        console.log("openDb=Success");
+      };
+      request.onerror = function (event) {
+        console.log("openDb=Error");
+      };
+    }
+    function closeDb() {
+      if (!db) {
+        console.log("already closed");
+        return;
+      }
+      var request = db.close(DB_NAME, ver);
+      console.log("closeDb");
+    }
+
+    function insertRow() {
+      if (!db) {
+        console.log("closed");
+        return;
+      }
+      var transaction = db.transaction([STORE_NAME], "readwrite");
+      var store = transaction.objectStore(STORE_NAME);
+      var request = store.add({ value: Date.now() });
+      request.onsuccess = function (event) {
+        console.log("insertDb=Success");
+      };
+      request.onerror = function (event) {
+        console.log("insertDb=Error");
+      };
+    }
+    function updateRow() {
+      if (!db) {
+        console.log("closed");
+        return;
+      }
+      var transaction = db.transaction([STORE_NAME], "readwrite");
+      var store = transaction.objectStore(STORE_NAME, { autoIncrement: true });
+      //オートクリメントキーによるキーは最後に負荷される
+      var request = store.put({ value: "updated", key: 1 });
+      request.onsuccess = function (event) {
+        console.log("updateDb=Success");
+      };
+      request.onerror = function (event) {
+        console.log("updateDb=Error");
+      };
+    }
+    function selectRow() {
+      if (!db) {
+        console.log("already closed");
+        return;
+      }
+      var transaction = db.transaction([STORE_NAME]);
+      var request = transaction.objectStore(STORE_NAME).get(1);
+      request.onsuccess = function (event) {
+        var data = request.result;
+        console.log("selectDb=Success");
+        console.log("DATA : key = " + data.key + " value = " + data.value);
+      };
+      request.onerror = function (event) {
+        print("ERROR: add() -> " + event);
+      };
+    }
+    function deleteDb() {
+      var transaction = db.transaction([STORE_NAME], "readwrite");
+      if (db) {
+        db.close();
+      }
+      var request = indexedDB.deleteDatabase(DB_NAME);
+      request.onsuccess = function (e) {
+        console.log("deleteDb=Success");
+      };
+      request.onerror = function (e) {
+        console.log("deleteDb=Error");
+      };
+      request.onblocked = function (e) {
+        console.log("deleteDb=Blocked");
+      };
+    }
+    window.onload = loadFinished;
+  </script>
+</html>

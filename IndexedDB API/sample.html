@@ -15,9 +15,11 @@
   <script>
     const DB_NAME = "sample";
     const STORE_NAME = "store";
+    const agent = window.navigator.userAgent.toLowerCase();
+
     var ver = 2;
     var db;
-
+    var IsFireFox = false;
     window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
     window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
     window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
@@ -27,6 +29,10 @@
         console.log("このブラウザーは安定版のIndexedDBに対応していません。");
       } else {
         console.log("このブラウザーは安定版のIndexedDBに対応しています。");
+      }
+      IsFireFox = agent.indexOf("firefox") != -1;
+      if (IsFireFox) {
+        console.log("ブラウザはfirefoxです。");
       }
     }
     function openAndCreateDb() {
@@ -62,7 +68,12 @@
         console.log("closed");
         return;
       }
-      var transaction = db.transaction([STORE_NAME], "readwrite");
+      var mode = "readwrite";
+      if (IsFireFox) {
+        // ディスク書込み保証:walファイルが瞬間的に増えて0KBになることを確認済み
+        mode = "readwriteflush";
+      }
+      var transaction = db.transaction([STORE_NAME], mode);
       var store = transaction.objectStore(STORE_NAME);
       var request = store.add({ value: Date.now() });
       request.onsuccess = function (event) {
@@ -77,7 +88,12 @@
         console.log("closed");
         return;
       }
-      var transaction = db.transaction([STORE_NAME], "readwrite");
+      var mode = "readwrite";
+      if (IsFireFox) {
+        mode = "readwriteflush";
+      }
+      // ディスク書込み保証:walファイルが瞬間的に増えて0KBになることを確認済み
+      var transaction = db.transaction([STORE_NAME], mode);
       var store = transaction.objectStore(STORE_NAME, { autoIncrement: true });
       //オートクリメントキーによるキーは最後に負荷される
       var request = store.put({ value: "updated", key: 1 });

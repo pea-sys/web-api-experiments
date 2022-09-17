@@ -383,7 +383,8 @@ MmFp5QMTI3t4efhSDr3hRSse6usm/m4U7OaM/wMEKQFa/lXbnwAAAABJRU5ErkJggg==
 ```
 
 長くてしんどいですね。base64 を使用すると元画像よりもデータサイズが増えます。  
-出力内容を{base64 データ貼り付け}に張り付ければ、埋め込み完了です。
+出力内容を{base64 データ貼り付け}に張り付ければ、埋め込み完了です。  
+ちなみに、ブラウザでデータスキーム(src 代入部)を直接入力して表示することも可能。
 
 ```html
 <img src="data:image/png;base64,"{base64 データ貼り付け}" width="96" height="64" title="AizuKomagadake" />

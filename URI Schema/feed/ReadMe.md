@@ -1,4 +1,4 @@
-# Feed URL Scheme
+# Feed URI Scheme
 
 フィード文書であることを表します(RFC 4287、RFC 5005)。  
 フィード文書は RSS,Atom などがあります。  
@@ -55,7 +55,7 @@ Atom 仕様は RSS と異なり標準化団体が策定しています。
     <title>Feed in HTML</title>
   </head>
   <body>
-    <h1>Feed URL in HTML</h1>
+    <h1>Feed URI in HTML</h1>
     <div></div>
   </body>
 </html>
@@ -75,7 +75,7 @@ Atom 仕様は RSS と異なり標準化団体が策定しています。
 
   ![5](https://user-images.githubusercontent.com/49807271/191445679-7413ac13-7866-4647-9bdd-81ece6782445.png)
 
-* 6.URL の項目に Web Server For Chrome で表示されている URL を貼り付け、
+* 6.URI の項目に Web Server For Chrome で表示されている URI を貼り付け、
   Load ボタンを押した後、Preview ボタンを押します。
 
 ![5](https://user-images.githubusercontent.com/49807271/191449809-9a0fb89a-e3ea-4abd-b7d3-72efe2253e79.png)

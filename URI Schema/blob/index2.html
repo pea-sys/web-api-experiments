@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <input type="file" multiple id="hoge" />
+    <div id="result"></div>
+    <script>
+      document.getElementById("hoge").onchange = function () {
+        document.getElementById("result").textContent = "";
+        objectUrls = [];
+
+        var fileList = this.files;
+
+        for (var i = 0, l = fileList.length; l > i; i++) {
+          var objectUrl = URL.createObjectURL(fileList[i]);
+          appendHTML('<a href="' + objectUrl + '" target="_blank"><img src="' + objectUrl + '"></a>' + "<br>");
+          appendHTML(objectUrl + "<br>");
+
+          objectUrls.push(objectUrl);
+        }
+      };
+
+      function appendHTML(html) {
+        document.getElementById("result").innerHTML += html;
+      }
+    </script>
+  </body>
+</html>
